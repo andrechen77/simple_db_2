@@ -7,11 +7,11 @@ import simpledb.TupleDesc.TDItem;
 
 public class QueryPlanVisualizer {
 
-    static final String JOIN = "⨝";
-    static final String HASH_JOIN = "⨝(hash)";
-    static final String SELECT = "σ";
-    static final String PROJECT = "π";
-    static final String RENAME = "ρ";
+    static final String JOIN = "JOIN";
+    static final String HASH_JOIN = "HASH_JOIN(hash)";
+    static final String SELECT = "SIGMA";
+    static final String PROJECT = "PI";
+    static final String RENAME = "RHO";
     static final String SCAN = "scan";
     static final String ORDERBY = "o";
     static final String GROUPBY = "g";
@@ -269,7 +269,7 @@ public class QueryPlanVisualizer {
                     card = (Integer) plan.getClass().getMethod("getEstimatedCardinality").invoke(plan);
                 } catch (Exception e) {
                     e.printStackTrace();
-                } 
+                }
 
                 thisNode.text = String.format("%1$s,card:%2$d", name,card);
                 int upBarShift = parentUpperBarStartShift;
@@ -304,7 +304,7 @@ public class QueryPlanVisualizer {
                     fieldIdx = (Integer) plan.getClass().getMethod("renamedField", (Class<?>[])null).invoke(plan);
                 } catch (Exception e) {
                     e.printStackTrace();
-                } 
+                }
                 String oldName = plan.getChildren()[0].getTupleDesc().getFieldName(fieldIdx);
                 thisNode.text = String.format("%1$s,%2$s->%3$s,card:%4$d", RENAME,oldName,newName,plan.getEstimatedCardinality());
                 int upBarShift = parentUpperBarStartShift;
