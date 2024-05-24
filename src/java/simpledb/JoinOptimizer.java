@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.tree.*;
+import simpledb.Predicate.Op;
 
 /**
  * The JoinOptimizer class is responsible for ordering a series of joins
@@ -107,11 +108,14 @@ public class JoinOptimizer {
             // You do not need to implement proper support for these for Lab 3.
             return card1 + cost1 + cost2;
         } else {
-            // Insert your code here.
             // HINT: You may need to use the variable "j" if you implemented
             // a join algorithm that's more complicated than a basic
             // nested-loops join.
-            return -1.0;
+
+            // TODO:
+            // Implement more complicated joins for extra credit
+            // current implementation only supports nested loop join
+            return cost1 + card1 * cost2 + card1 * card2;
         }
     }
 
@@ -147,7 +151,7 @@ public class JoinOptimizer {
         }
     }
 
-    /**
+    /*
      * Estimate the join cardinality of two tables.
      * */
     public static int estimateTableJoinCardinality(Predicate.Op joinOp,
@@ -155,9 +159,20 @@ public class JoinOptimizer {
             String field2PureName, int card1, int card2, boolean t1pkey,
             boolean t2pkey, Map<String, TableStats> stats,
             Map<String, Integer> tableAliasToId) {
-        int card = 1;
-        // some code goes here
-        return card <= 0 ? 1 : card;
+        
+        if (joinOp == Op.EQUALS) {
+            if (t1pkey && t2pkey) {
+                return Math.min(card1, card2);
+            } else if (t1pkey) {
+                return card2;
+            } else if (t2pkey) {
+                return card1;
+            } else {
+                return Math.max(card1, card2);
+            }
+        } else {
+            return (int) (card1 * card2 * 0.3);
+        }
     }
 
     /**

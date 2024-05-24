@@ -142,8 +142,6 @@ public class TableStats {
                     }
                 }
             }
-
-            System.err.println("numTuples: " + numTuples);
         } catch (DbException e) {
             throw new RuntimeException(e);
         } catch (TransactionAbortedException e) {
