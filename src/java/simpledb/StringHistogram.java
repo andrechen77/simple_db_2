@@ -4,7 +4,7 @@ package simpledb;
  * A class to represent a fixed-width histogram over a single String-based
  * field.
  */
-public class StringHistogram {
+public class StringHistogram implements Histogram {
     final IntHistogram hist;
 
     /**
@@ -12,7 +12,7 @@ public class StringHistogram {
      * <p>
      * Our implementation is written in terms of an IntHistogram by converting
      * each String to an integer.
-     * 
+     *
      * @param buckets
      *            the number of buckets
      */
@@ -68,7 +68,7 @@ public class StringHistogram {
     /**
      * Estimate the selectivity (as a double between 0 and 1) of the specified
      * predicate over the specified string
-     * 
+     *
      * @param op
      *            The operation being applied
      * @param s
@@ -81,7 +81,7 @@ public class StringHistogram {
 
     /**
      * @return the average selectivity of this histogram.
-     * 
+     *
      *         This is not an indispensable method to implement the basic join
      *         optimization. It may be needed if you want to implement a more
      *         efficient optimization

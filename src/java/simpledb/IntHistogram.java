@@ -2,7 +2,7 @@ package simpledb;
 
 /** A class to represent a fixed-width histogram over a single integer-based field.
  */
-public class IntHistogram {
+public class IntHistogram implements Histogram {
 
     // `frequencies[i]` contains the number of elements in the half-open interval
     // from `minValue + i * bucketWidth` to `minValue + (i + 1) * bucketWidth`.
@@ -111,7 +111,9 @@ public class IntHistogram {
 
         // calculate the fraction inside the bucket
         int leftEnd = this.minValue + bucketIndex * this.bucketWidth;
-        double fractionInBucket = (double) (value - leftEnd + (includeEqualTo ? 1 : 0)) / this.bucketWidth * this.frequencies[bucketIndex];
+        int distanceFromLeftEnd = value - leftEnd + (includeEqualTo ? 1 : 0);
+        double fractionOfBucket = (double) distanceFromLeftEnd / this.bucketWidth;
+        double fractionInBucketOfTotal = fractionOfBucket * this.frequencies[bucketIndex] / this.totalNumElements;
 
         // calculate the number of entries to the left of the bucket
         int sum = 0;
@@ -119,7 +121,8 @@ public class IntHistogram {
             sum += this.frequencies[i];
         }
 
-        return fractionInBucket + (double) sum / this.totalNumElements;
+        double answer = fractionInBucketOfTotal + (double) sum / this.totalNumElements;
+        return answer;
     }
 
     /**
