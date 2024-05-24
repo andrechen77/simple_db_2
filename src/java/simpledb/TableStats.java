@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.management.RuntimeErrorException;
 
 /**
  * TableStats represents statistics (e.g., histograms) about base tables in a
@@ -189,7 +190,17 @@ public class TableStats {
      * expected selectivity. You may estimate this value from the histograms.
      * */
     public double avgSelectivity(int field, Predicate.Op op) {
-        return this.histograms[field].avgSelectivity();
+        switch(op){
+            case EQUALS:
+                return this.histograms[field].avgSelectivity();
+            case NOT_EQUALS:
+                return 1.0 - this.histograms[field].avgSelectivity();
+            case LIKE:
+                throw new RuntimeException("Unsupported operation");
+            default:
+                // if here than op should be a range which is on average 0.5
+                return 0.5;
+        }
     }
 
     /**

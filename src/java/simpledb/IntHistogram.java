@@ -134,7 +134,13 @@ public class IntHistogram implements Histogram {
      *     implement a more efficient optimization
      * */
     public double avgSelectivity() {
-        return 1.0; // TODO what the heck is this
+        if (this.totalNumElements == 0) return 0.0;
+        
+        double sol = 0;
+        for (int f : frequencies) {
+            sol += f * f;  
+        }
+        return sol / Math.pow(this.totalNumElements, 2);
     }
 
     /**
