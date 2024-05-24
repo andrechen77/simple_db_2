@@ -85,7 +85,6 @@ public class TableStats {
      */
     public TableStats(int tableid, int ioCostPerPage) {
         try {
-
             this.tableId = tableid;
             this.ioCostPerPage = ioCostPerPage;
 
@@ -99,9 +98,10 @@ public class TableStats {
             Arrays.fill(minimums, Integer.MAX_VALUE);
             int[] maximums = new int[tupleDesc.numFields()];
             Arrays.fill(maximums, Integer.MIN_VALUE);
-            HeapFileIterator tupleIterator0 = (HeapFileIterator) heapFile.iterator(new TransactionId());
-            while (tupleIterator0.hasNext()) {
-                Tuple tuple = tupleIterator0.next();
+            SeqScan seqScan = new SeqScan(new TransactionId(), tableid);
+            seqScan.open();
+            while (seqScan.hasNext()) {
+                Tuple tuple = seqScan.next();
                 for (int f = 0; f < tupleDesc.numFields(); ++f) {
                     if (tupleDesc.getFieldType(f) == Type.INT_TYPE) {
                         int value = ((IntField) tuple.getField(f)).getValue();
@@ -127,9 +127,9 @@ public class TableStats {
 
             // scan through the entire page to fill in the histograms
             this.numTuples = 0;
-            HeapFileIterator tupleIterator1 = (HeapFileIterator) heapFile.iterator(new TransactionId());
-            while (tupleIterator1.hasNext()) {
-                Tuple tuple = tupleIterator1.next();
+            seqScan.rewind();
+            while (seqScan.hasNext()) {
+                Tuple tuple = seqScan.next();
                 this.numTuples += 1;
                 for (int f = 0; f < tupleDesc.numFields(); ++f) {
                     switch (tupleDesc.getFieldType(f)) {
